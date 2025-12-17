@@ -57,31 +57,38 @@
     </div>
 
     <div class="preview-section">
-      <h3>Предпросмотр интерфейса</h3>
-      <div class="mockup-card">
-        <div class="mockup-nav" :style="{ backgroundColor: colors[0]?.hex || '#ccc' }">
-          <span class="mockup-logo" :style="{ color: getTextColor(colors[0]?.hex || '#ccc') }">Logo</span>
-          <div class="mockup-links" :style="{ color: getTextColor(colors[0]?.hex || '#ccc') }">
-            <span>Home</span><span>About</span>
-          </div>
+        <div class="preview-header">
+            <h3>👁️ Предпросмотр интерфейса</h3>
+            <label class="theme-switch">
+            <input type="checkbox" v-model="isPreviewDark">
+            <span>Тёмный фон</span>
+            </label>
         </div>
-        
-        <div class="mockup-body">
-          <h2 :style="{ color: colors[1]?.hex || '#333' }">Заголовок страницы</h2>
-          <p>
-            Это пример того, как цвета вашей палитры могут выглядеть в реальном интерфейсе. 
-            Мы используем первый цвет для шапки, второй для заголовков.
-          </p>
-          <div class="mockup-buttons">
-            <button class="mockup-btn" :style="{ backgroundColor: colors[2]?.hex || 'blue', color: getTextColor(colors[2]?.hex || 'blue') }">
-              Основная кнопка
-            </button>
-            <button class="mockup-btn" v-if="colors[3]" :style="{ backgroundColor: colors[3]?.hex, color: getTextColor(colors[3]?.hex) }">
-              Вторичная
-            </button>
-          </div>
+
+        <div class="mockup-card" :class="{ 'dark-mode': isPreviewDark }">
+            <div class="mockup-nav" :style="{ backgroundColor: colors[0]?.hex || '#ccc' }">
+            <span class="mockup-logo" :style="{ color: getTextColor(colors[0]?.hex || '#ccc') }">Logo</span>
+            <div class="mockup-links" :style="{ color: getTextColor(colors[0]?.hex || '#ccc') }">
+                <span>Home</span><span>About</span>
+            </div>
+            </div>
+            
+            <div class="mockup-body">
+            <h2 :style="{ color: colors[1]?.hex || '#333' }">Заголовок страницы</h2>
+            <p>
+                Это пример того, как цвета вашей палитры могут выглядеть в реальном интерфейсе. 
+                Мы используем первый цвет для шапки, второй для заголовков.
+            </p>
+            <div class="mockup-buttons">
+                <button class="mockup-btn" :style="{ backgroundColor: colors[2]?.hex || 'blue', color: getTextColor(colors[2]?.hex || 'blue') }">
+                Основная кнопка
+                </button>
+                <button class="mockup-btn" v-if="colors[3]" :style="{ backgroundColor: colors[3]?.hex, color: getTextColor(colors[3]?.hex) }">
+                Вторичная
+                </button>
+            </div>
+            </div>
         </div>
-      </div>
     </div>
 
     <ExportModal v-if="showExport" :colors="colors" @close="showExport = false" />
@@ -99,6 +106,7 @@ const mode = ref('random')
 const baseColor = ref('#42b883')
 const showExport = ref(false)
 const paletteSize = ref(5)
+const isPreviewDark = ref(false)
 
 // Методы помощники
 const getTextColor = (hex) => getContrastRatio(hex) === 'black' ? '#000' : '#FFF'
@@ -272,6 +280,44 @@ onMounted(() => {
 .mockup-buttons { display: flex; gap: 10px; justify-content: center; }
 .mockup-btn {
   padding: 10px 24px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;
+}
+
+/* Шапка превью */
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.theme-switch {
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+}
+
+/* Стили тёмной темы для макета */
+.mockup-card {
+  transition: background-color 0.3s, color 0.3s;
+  background-color: white; 
+}
+
+.mockup-card.dark-mode {
+  background-color: #303030;
+  border-color: #000000;
+}
+
+.mockup-card.dark-mode .mockup-body p {
+  color: #eee;
+  opacity: 0.9;
+}
+
+/* Если в тёмном режиме заголовок должен быть белым, если не перекрыт цветом из палитры */
+.mockup-card.dark-mode h2 {
+  color: #fff;
 }
 
 /* Адаптивность */
